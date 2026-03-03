@@ -1,0 +1,33 @@
+const mongoose = require('mongoose');
+
+const PersonaSchema = new mongoose.Schema({
+    modelo: {
+        type: String,
+        enum: ['BASICA', 'OVERSIZE', 'POLO'],
+        required: true
+    },
+    color: {
+        type: String,
+        enum: ['NEGRO','BLANCO','ROJO','AZUL','VERDE'],
+        required: true
+    },
+    material: {
+        type: String,
+        enum: ['ALGODON', 'POLIESTER', 'SEDA'],
+        required: true
+    },
+    cantidad: {
+        type: Number,
+        required: true,
+        min: 0,
+    },
+    precio: {
+        type: Number,
+        required: true,
+        min: 0,
+    },
+}, {
+  versionKey: false
+});
+
+module.exports = mongoose.model('Camiseta', PersonaSchema);
