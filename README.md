@@ -12,7 +12,7 @@ Proyecto desarrollado para la asignatura utilizando:
 
 ---
 
-## 📦 Descripción
+## Descripción
 
 Aplicación web para la administración de artículos (camisetas) en una tienda online.
 
@@ -36,26 +36,26 @@ Cada camiseta contiene:
 
 ## Instalación
 
-### 1️⃣ Clonar repositorio
+### 1️. Clonar repositorio
 
 ```
 git clone https://github.com/TU_USUARIO/tienda-camisetas-crud.git
 cd tienda-camisetas-crud
 ```
 
-### 2️⃣ Instalar dependencias
+### 2️. Instalar dependencias
 
 ```
 npm install
 ```
 
-### 3️⃣ Iniciar MongoDB
+### 3️. Iniciar MongoDB
 
 ```
 sudo service mongodb start
 ```
 
-### 4️⃣ Ejecutar servidor
+### 4️. Ejecutar servidor
 
 ```
 node server.js
