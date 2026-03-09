@@ -39,7 +39,7 @@ Cada camiseta contiene:
 ### 1️. Clonar repositorio
 
 ```
-git clone https://github.com/TU_USUARIO/tienda-camisetas-crud.git
+git clone https://github.com/SandraLopez18/Proyecto-B-AST.git
 cd tienda-camisetas-crud
 ```
 
@@ -52,7 +52,7 @@ npm install
 ### 3️. Iniciar MongoDB
 
 ```
-sudo service mongodb start
+sudo service mongod start
 ```
 
 ### 4️. Ejecutar servidor
