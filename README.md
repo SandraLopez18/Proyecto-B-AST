@@ -16,22 +16,37 @@ Proyecto desarrollado para la asignatura utilizando:
 
 Aplicación web para la administración de artículos (camisetas) en una tienda online.
 
-Permite:
+El sistema implementa una **API REST** y un **cliente web** que permite realizar operaciones **CRUD** sobre una base de datos de camisetas.
 
-- Crear camisetas
-- Consultar todas las camisetas
-- Consultar por ID
-- Modificar camisetas
-- Eliminar camisetas
+CRUD significa:
 
-Cada camiseta contiene:
+- **Create** → Crear camisetas
+- **Read** → Consultar camisetas
+- **Update** → Modificar camisetas
+- **Delete** → Eliminar camisetas
 
-- Modelo (ENUM: BASICA, OVERSIZE, POLO)
-- Color (ENUM: NEGRO, BLANCO, ROJO, AZUL, VERDE)
-- Material (ENUM: ALGODON, POLIESTER, SEDA)
-- Cantidad (Number, obligatorio)
-- Precio (Number, obligatorio)
+Además permite:
 
+- Buscar camisetas por **ID**
+- Buscar camisetas por **color**
+
+---
+
+# Modelo de datos
+
+Cada camiseta contiene los siguientes campos:
+
+- **Modelo** (ENUM: BASICA, OVERSIZE, POLO)
+- **Color** (ENUM: NEGRO, BLANCO, ROJO, AZUL, VERDE)
+- **Material** (ENUM: ALGODON, POLIESTER, SEDA)
+- **Cantidad** (Number, obligatorio, mínimo 0)
+- **Precio** (Number, obligatorio, mínimo 0)
+
+Validaciones implementadas:
+
+- Campos obligatorios
+- Restricción de valores mediante ENUM
+- Cantidad y precio no pueden ser negativos
 ---
 
 ## Instalación
@@ -40,7 +55,7 @@ Cada camiseta contiene:
 
 ```
 git clone https://github.com/SandraLopez18/Proyecto-B-AST.git
-cd tienda-camisetas-crud
+cd Proyecto-B-AST
 ```
 
 ### 2️. Instalar dependencias
