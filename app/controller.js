@@ -7,15 +7,41 @@ const Camiseta = require('./modelo/camiseta');
 
 // Exportada para poder ser utilizada por otros archivos del proyecto
 exports.getCamiseta = async function (req,res) {
-    try {
-        // Espera a que termine la consulta pudiendo atender otras (asíncrono)
-        // lean() Moongose devuelve objetos JSON simples
-        const camisetas = await Camiseta.find().lean();
-        res.json(camisetas);    
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
+  try {
+    const { id, modelo, color, material } = req.query;
+
+    // Búsqueda por ID interno
+    if (id) {
+      const camiseta = await Camiseta.findById(id).lean();
+
+      if (!camiseta) {
+        return res.status(404).json({ error: 'Camiseta no encontrada' });
+      }
+
+      // Se devuelve en un array para mantener el mismo formato que el listado
+      return res.status(200).json([camiseta]);
     }
+
+    // Búsqueda por otras características
+    const filtro = {};
+
+    if (modelo) filtro.modelo = modelo;
+    if (color) filtro.color = color;
+    if (material) filtro.material = material;
+
+    const camisetas = await Camiseta.find(filtro).lean();
+    res.status(200).json(camisetas);
+
+  } catch (error) {
+    console.error(error);
+
+    // Si el id no tiene formato válido de Mongo (ObjectId), Mongoose lanza CastError
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    res.status(500).send(error);
+  }
 };
 
 // Obtener objeto Camiseta por su id
