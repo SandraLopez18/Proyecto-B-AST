@@ -5,13 +5,12 @@ angular.module('MainApp', [])
     $scope.camisetas = [];
     $scope.selected = false;
 
-    // Mensajes para mostrar en pantalla
     $scope.mensaje = '';
     $scope.error = '';
 
-    // Campos de búsqueda
     $scope.busqueda = {
       id: '',
+      nombre: '',
       color: ''
     };
 
@@ -32,7 +31,6 @@ angular.module('MainApp', [])
       }
     }
 
-    // Cargar todas las camisetas
     function cargarCamisetas() {
       limpiarMensajes();
 
@@ -47,17 +45,14 @@ angular.module('MainApp', [])
 
     cargarCamisetas();
 
-    // Buscar camisetas
     $scope.buscarCamisetas = function() {
       limpiarMensajes();
 
       const params = {};
 
-      if ($scope.busqueda.id) {
-        params.id = $scope.busqueda.id;
-      } else if ($scope.busqueda.color) {
-        params.color = $scope.busqueda.color;
-      }
+      if ($scope.busqueda.id) params.id = $scope.busqueda.id;
+      if ($scope.busqueda.nombre) params.nombre = $scope.busqueda.nombre;
+      if ($scope.busqueda.color) params.color = $scope.busqueda.color;
 
       $http.get('/api/camisetas', { params: params })
         .then(function(res) {
@@ -75,13 +70,11 @@ angular.module('MainApp', [])
         });
     };
 
-    // Mostrar todas
     $scope.mostrarTodas = function() {
-      $scope.busqueda = { id: '', color: '' };
+      $scope.busqueda = { id: '', nombre: '', color: '' };
       cargarCamisetas();
     };
 
-    // Crear
     $scope.registrarCamiseta = function() {
       limpiarMensajes();
 
@@ -97,7 +90,6 @@ angular.module('MainApp', [])
         });
     };
 
-    // Modificar
     $scope.modificarCamiseta = function(camiseta) {
       limpiarMensajes();
 
@@ -116,7 +108,6 @@ angular.module('MainApp', [])
         });
     };
 
-    // Borrar
     $scope.borrarCamiseta = function(camiseta) {
       limpiarMensajes();
 
@@ -135,7 +126,6 @@ angular.module('MainApp', [])
         });
     };
 
-    // Seleccionar camiseta
     $scope.selectCamiseta = function(camiseta) {
       limpiarMensajes();
       $scope.newCamiseta = angular.copy(camiseta);
@@ -143,7 +133,6 @@ angular.module('MainApp', [])
       $scope.selectedId = camiseta._id;
     };
 
-    // Limpiar formulario
     $scope.limpiarFormulario = function() {
       $scope.newCamiseta = {};
       $scope.selected = false;

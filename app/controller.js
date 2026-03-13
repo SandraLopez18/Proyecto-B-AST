@@ -1,14 +1,9 @@
-// Importación del modelo de camiseta en Moongose
-// Permite hacer operaciones contra MongoDB : find(), create ()
 const Camiseta = require('./modelo/camiseta');
 
-
-// Obtención de todos los objetos Camiseta de la base de datos
-
-// Exportada para poder ser utilizada por otros archivos del proyecto
-exports.getCamiseta = async function (req,res) {
+// Obtener camisetas
+exports.getCamiseta = async function (req, res) {
   try {
-    const { id, modelo, color, material } = req.query;
+    const { id, nombre, modelo, color, material } = req.query;
 
     // Búsqueda por ID interno
     if (id) {
@@ -18,13 +13,13 @@ exports.getCamiseta = async function (req,res) {
         return res.status(404).json({ error: 'Camiseta no encontrada' });
       }
 
-      // Se devuelve en un array para mantener el mismo formato que el listado
       return res.status(200).json([camiseta]);
     }
 
     // Búsqueda por otras características
     const filtro = {};
 
+    if (nombre) filtro.nombre = new RegExp(nombre, 'i'); // búsqueda flexible
     if (modelo) filtro.modelo = modelo;
     if (color) filtro.color = color;
     if (material) filtro.material = material;
@@ -35,7 +30,6 @@ exports.getCamiseta = async function (req,res) {
   } catch (error) {
     console.error(error);
 
-    // Si el id no tiene formato válido de Mongo (ObjectId), Mongoose lanza CastError
     if (error.name === 'CastError') {
       return res.status(400).json({ error: 'ID inválido' });
     }
@@ -44,58 +38,54 @@ exports.getCamiseta = async function (req,res) {
   }
 };
 
-// Obtener objeto Camiseta por su id
+// Obtener camiseta por ID
 exports.getCamisetaById = async function (req, res) {
-    try {
-        const camiseta = await Camiseta.findById(req.params.id).lean();
+  try {
+    const camiseta = await Camiseta.findById(req.params.id).lean();
 
-        if (!camiseta) {
-            return res.status(404).json({ error: 'Camiseta no encontrada' });
-        }
-
-        res.status(200).json(camiseta);
-    } catch (error) {
-        console.error(error);
-
-        // Si el id no tiene formato válido de Mongo (ObjectId), Mongoose lanza CastError
-        if (error.name === 'CastError') {
-            return res.status(400).json({ error: 'ID inválido' });
-        }
-
-        res.status(500).send(error);
+    if (!camiseta) {
+      return res.status(404).json({ error: 'Camiseta no encontrada' });
     }
+
+    res.status(200).json(camiseta);
+  } catch (error) {
+    console.error(error);
+
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    res.status(500).send(error);
+  }
 };
 
+// Crear camiseta
+exports.setCamiseta = async function (req, res) {
+  try {
+    const nuevaCamiseta = await Camiseta.create({
+      nombre: req.body.nombre,
+      modelo: req.body.modelo,
+      color: req.body.color,
+      material: req.body.material,
+      cantidad: req.body.cantidad,
+      precio: req.body.precio
+    });
 
-// Guardar objeto Camiseta en BD
-exports.setCamiseta = async function (req,res) {
-    try {
-        // req.body contiene los datos enviados desde Angular
-        const nuevaCamiseta = await Camiseta.create({
-            modelo: req.body.modelo,
-            color: req.body.color,
-            material: req.body.material,
-            cantidad: req.body.cantidad,
-            precio: req.body.precio
-        });
+    res.status(201).json(nuevaCamiseta);
 
-        // Devolver solo el objeto creado
-        res.status(201).json(nuevaCamiseta);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
 };
 
-// Modificación objeto Camiseta de la BD
+// Modificar camiseta
 exports.updateCamiseta = async function (req, res) {
   try {
+    const { nombre, modelo, color, material, cantidad, precio } = req.body;
 
-    const { modelo, color, material, cantidad, precio } = req.body;
-
-    // Verificar que vienen todos los campos
     if (
+      nombre === undefined ||
       modelo === undefined ||
       color === undefined ||
       material === undefined ||
@@ -103,14 +93,14 @@ exports.updateCamiseta = async function (req, res) {
       precio === undefined
     ) {
       return res.status(400).json({
-        error: "En una petición PUT deben enviarse todos los campos del recurso."
+        error: 'En una petición PUT deben enviarse todos los campos del recurso.'
       });
     }
 
-    // Reemplazar completamente el documento
     const camisetaActualizada = await Camiseta.findByIdAndUpdate(
       req.params.id,
       {
+        nombre,
         modelo,
         color,
         material,
@@ -119,21 +109,19 @@ exports.updateCamiseta = async function (req, res) {
       },
       {
         runValidators: true,
-        new: true   // devuelve el documento actualizado
+        new: true
       }
     );
 
     if (!camisetaActualizada) {
-      return res.status(404).json({ error: "Camiseta no encontrada" });
+      return res.status(404).json({ error: 'Camiseta no encontrada' });
     }
 
-    // Devolver solo el recurso actualizado 
     res.status(200).json(camisetaActualizada);
 
   } catch (error) {
     console.error(error);
 
-    // Si el id no tiene formato válido de Mongo (ObjectId), Mongoose lanza CastError
     if (error.name === 'CastError') {
       return res.status(400).json({ error: 'ID inválido' });
     }
@@ -142,27 +130,24 @@ exports.updateCamiseta = async function (req, res) {
   }
 };
 
-// Eliminación de un objeto Camiseta de la BD
-exports.removeCamiseta = async function (req,res) {
-    try {
+// Eliminar camiseta
+exports.removeCamiseta = async function (req, res) {
+  try {
+    const deleted = await Camiseta.findByIdAndDelete(req.params.id);
 
-        const deleted = await Camiseta.findByIdAndDelete(req.params.id);
-
-        if (!deleted) {
-            return res.status(404).json({ error: "Camiseta no encontrada" });
-        }
-
-        // Devolver el objeto eliminado 
-        res.status(200).json(deleted);
-
-    } catch (error) {
-        console.error(error);
-
-        // Si el id no tiene formato válido de Mongo (ObjectId), Mongoose lanza CastError
-        if (error.name === 'CastError') {
-            return res.status(400).json({ error: 'ID inválido' });
-        }
-
-        res.status(500).send(error);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Camiseta no encontrada' });
     }
-}
+
+    res.status(200).json(deleted);
+
+  } catch (error) {
+    console.error(error);
+
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    res.status(500).send(error);
+  }
+};

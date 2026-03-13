@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
-const PersonaSchema = new mongoose.Schema({
+const CamisetaSchema = new mongoose.Schema({
+    nombre: {
+        type: String,
+        required: true,
+        trim: true
+    },
     modelo: {
         type: String,
         enum: ['BASICA', 'OVERSIZE', 'POLO'],
@@ -8,7 +13,7 @@ const PersonaSchema = new mongoose.Schema({
     },
     color: {
         type: String,
-        enum: ['NEGRO','BLANCO','ROJO','AZUL','VERDE'],
+        enum: ['NEGRO', 'BLANCO', 'ROJO', 'AZUL', 'VERDE'],
         required: true
     },
     material: {
@@ -19,15 +24,15 @@ const PersonaSchema = new mongoose.Schema({
     cantidad: {
         type: Number,
         required: true,
-        min: 0,
+        min: 0
     },
     precio: {
         type: Number,
         required: true,
-        min: 0,
-    },
+        min: 0
+    }
 }, {
-  versionKey: false
+    versionKey: false
 });
 
-module.exports = mongoose.model('Camiseta', PersonaSchema);
+module.exports = mongoose.model('Camiseta', CamisetaSchema);
